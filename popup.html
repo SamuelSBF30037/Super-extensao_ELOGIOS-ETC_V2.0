@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <title>Super DOPM</title>
+</head>
+<body>
+
+  <!-- Splash Screen -->
+  <div id="splash-screen" class="splash-container">
+    <img src="images/alert.png" alt="Logo" class="splash-logo">
+    <h1 class="splash-title">BASE ADM PMGO / DOEPM</h1>
+    <p class="splash-subtitle">Facilitando seu fluxo de trabalho entre SEI e SICAD</p>
+    <div class="splash-loading"><div class="splash-loading-bar"></div></div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="header-left">
+      <img src="images/alert.png" alt="Logo FLUXO" />
+      <h2>BASE ADM DOEPM | SEI&rsaquo;SICAD</h2>
+    </div>
+    <div class="menu">
+      <button class="menu-button" title="Menu de opções"><i class="fas fa-bars"></i></button>
+      <div class="menu-content">
+        <a href="#" id="home-button"><i class="fas fa-home"></i> Página Inicial</a>
+        <a href="#" id="darkModeToggle"><i class="fas fa-moon"></i> Modo escuro</a>
+        <a href="#" id="version-info"><i class="fas fa-info-circle"></i> Versão 2.1</a>
+      </div>
+    </div>
+    <div class="header-right">
+      <img src="images/alert.png" alt="Logo BAPM">
+    </div>
+  </header>
+
+  <!-- Notificações -->
+  <div id="notification" class="notification">
+    <i class="fas fa-check-circle"></i>
+    <span id="notification-message">Operação realizada com sucesso!</span>
+  </div>
+
+  <!-- Aviso site não suportado -->
+  <div class="warning-section" id="warning-section">
+    <img src="images/alert.png" alt="Aviso">
+    <h3>Site não suportado</h3>
+    <p>Esta extensão funciona exclusivamente nos seguintes endereços:</p>
+    <div class="site-url">https://sei.go.gov.br</div>
+    <div class="site-url">https://sisp.ssp.go.gov.br</div>
+    <p>Acesse um dos sites compatíveis para utilizar todas as funcionalidades.</p>
+  </div>
+
+  <!-- Conteúdo principal -->
+  <div id="main-content">
+
+    <!-- Home: grid de módulos -->
+    <div id="home-page" class="module-grid">
+      <h3 class="grid-title"><i class="fas fa-th"></i> Funcionalidades</h3>
+      <div class="module-grid-container">
+
+        <div class="module-card" data-module="register-compliments">
+          <div class="module-icon"><i class="fas fa-award"></i></div>
+          <div class="module-info">
+            <h4>Elogios</h4>
+            <p>Capturar e processar elogios</p>
+          </div>
+          <div class="module-status active"><span class="status-badge">Ativo</span></div>
+        </div>
+
+        <div class="module-card" data-module="filter-rg">
+          <div class="module-icon"><i class="fas fa-filter"></i></div>
+          <div class="module-info">
+            <h4>Filtrar RG's</h4>
+            <p>Filtrar e organizar RG's</p>
+          </div>
+          <div class="module-status"><span class="status-badge">Em breve</span></div>
+        </div>
+
+        <div class="module-card" data-module="register-courses">
+          <div class="module-icon"><i class="fas fa-graduation-cap"></i></div>
+          <div class="module-info">
+            <h4>Cursos</h4>
+            <p>Cadastrar cursos e treinamentos</p>
+          </div>
+          <div class="module-status"><span class="status-badge">Em breve</span></div>
+        </div>
+
+        <div class="module-card" data-module="register-certificates">
+          <div class="module-icon"><i class="fas fa-certificate"></i></div>
+          <div class="module-info">
+            <h4>Certificados</h4>
+            <p>Cadastrar certificados</p>
+          </div>
+          <div class="module-status"><span class="status-badge">Em breve</span></div>
+        </div>
+
+        <div class="module-card" data-module="remove-spacing">
+          <div class="module-icon"><i class="fas fa-broom"></i></div>
+          <div class="module-info">
+            <h4>Limpar Texto</h4>
+            <p>Remover espaços extras</p>
+          </div>
+          <div class="module-status"><span class="status-badge">Em breve</span></div>
+        </div>
+
+        <div class="module-card" data-module="extension-settings">
+          <div class="module-icon"><i class="fas fa-cog"></i></div>
+          <div class="module-info">
+            <h4>Configurações</h4>
+            <p>Personalizar a extensão</p>
+          </div>
+          <div class="module-status"><span class="status-badge">Em breve</span></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Container do módulo carregado -->
+    <div id="module-container" style="display:none;">
+      <div class="module-nav">
+        <button class="back-button" id="moduleBackButton">
+          <i class="fas fa-chevron-left"></i> Voltar
+        </button>
+        <div class="module-nav-title" id="moduleTitle"></div>
+      </div>
+      <div id="module-content"></div>
+    </div>
+
+  </div>
+
+  <footer>
+    <span>TECNOLOGIA BAPM PMGO</span> | <span>v2.1</span>
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>

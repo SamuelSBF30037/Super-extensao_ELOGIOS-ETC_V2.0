@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    :root {
+      --primary: #1e40af;
+      --primary-light: #3b82f6;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --text: #111827;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+      --radius: 8px;
+      --shadow: 0 1px 3px rgba(0,0,0,.1);
+    }
+    .dark-mode {
+      --bg:#111827;--surface:#1f2937;--text:#f3f4f6;
+      --text-muted:#9ca3af;--border:#374151;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:var(--bg);color:var(--text);padding:14px;font-size:13px;line-height:1.5;}
+
+    #alert{display:none;align-items:center;gap:8px;padding:9px 13px;border-radius:var(--radius);font-size:12px;font-weight:500;margin-bottom:12px;}
+    #alert.show{display:flex;}
+    #alert.success{background:#d1fae5;color:#065f46;}
+    #alert.error{background:#fee2e2;color:#991b1b;}
+    #alert.info{background:#dbeafe;color:#1e40af;}
+    #alert.warning{background:#fef3c7;color:#92400e;}
+    .dark-mode #alert.success{background:#064e3b;color:#6ee7b7;}
+    .dark-mode #alert.error{background:#7f1d1d;color:#fca5a5;}
+    .dark-mode #alert.info{background:#1e3a8a;color:#93c5fd;}
+    .dark-mode #alert.warning{background:#78350f;color:#fde68a;}
+
+    .capture-row{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+    .btn-capture{flex:1;padding:10px 14px;background:var(--primary-light);color:#fff;border:none;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:opacity .15s,transform .1s;}
+    .btn-capture:hover{opacity:.88;}
+    .btn-capture:active{transform:scale(.97);}
+    .btn-capture:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+    .cfg-chip{font-size:11px;white-space:nowrap;background:var(--border);color:var(--text-muted);padding:3px 9px;border-radius:20px;}
+
+    .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;box-shadow:var(--shadow);overflow:hidden;}
+    .panel-header{display:flex;align-items:center;justify-content:space-between;padding:9px 13px;border-bottom:1px solid var(--border);background:var(--bg);}
+    .panel-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);display:flex;align-items:center;gap:6px;}
+    .panel-label i{color:var(--primary-light);}
+    .panel-body{padding:10px 13px;}
+
+    textarea{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-family:inherit;font-size:12.5px;resize:vertical;transition:border-color .2s,box-shadow .2s;}
+    textarea:focus{outline:none;border-color:var(--primary-light);box-shadow:0 0 0 3px rgba(59,130,246,.18);}
+    .dark-mode textarea{background:#111827;color:var(--text);border-color:var(--border);}
+    #rawText{height:110px;}
+    #processedText{height:120px;}
+    #rgList{height:90px;font-family:'Courier New',monospace;font-size:12px;}
+
+    .badge{font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;background:var(--primary-light);color:#fff;}
+    .badge.zero{background:var(--border);color:var(--text-muted);}
+
+    .btn-group{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+    .btn{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .15s,transform .1s;}
+    .btn:hover{opacity:.85;}
+    .btn:active{transform:scale(.96);}
+    .btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+    .btn-blue{background:var(--primary-light);color:#fff;}
+    .btn-green{background:var(--success);color:#fff;}
+    .btn-purple{background:#7c3aed;color:#fff;}
+    .btn-gray{background:#6b7280;color:#fff;}
+    .btn-orange{background:var(--warning);color:#fff;}
+
+    #progressSection{display:none;margin-bottom:12px;}
+    #progressSection.show{display:block;}
+    .progress-wrap{background:var(--border);border-radius:4px;height:5px;overflow:hidden;margin-bottom:5px;}
+    .progress-fill{height:100%;background:var(--primary-light);border-radius:4px;width:0%;transition:width .4s ease;}
+    .progress-text{font-size:11px;color:var(--text-muted);text-align:center;}
+
+    .send-row{display:flex;gap:8px;}
+    #btnSend{flex:1;padding:10px 14px;background:var(--success);color:#fff;border:none;border-radius:var(--radius);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:opacity .15s,transform .1s;}
+    #btnSend:hover{opacity:.88;}
+    #btnSend:active{transform:scale(.97);}
+    #btnSend:disabled{opacity:.35;cursor:not-allowed;transform:none;}
+
+    .divider{border:none;border-top:1px solid var(--border);margin:12px 0;}
+
+    #debugInfo{display:none;font-size:11px;color:var(--text-muted);background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 10px;margin-top:8px;font-family:monospace;white-space:pre-wrap;max-height:80px;overflow-y:auto;}
+    #debugInfo.show{display:block;}
+  </style>
+</head>
+<body>
+
+<div id="alert"><i id="alertIcon" class="fas fa-info-circle"></i><span id="alertMsg"></span></div>
+
+<div class="capture-row">
+  <button class="btn-capture" id="btnCapture">
+    <i class="fas fa-download"></i> Capturar Texto da Página SEI
+  </button>
+  <span class="cfg-chip" id="cfgChip">config local</span>
+</div>
+
+<div class="panel">
+  <div class="panel-header">
+    <span class="panel-label"><i class="fas fa-file-alt"></i> Texto Capturado</span>
+    <div class="btn-group">
+      <button class="btn btn-gray" id="btnClearAll"><i class="fas fa-trash-alt"></i> Limpar</button>
+      <button class="btn btn-blue" id="btnProcess"><i class="fas fa-cogs"></i> Processar</button>
+    </div>
+  </div>
+  <div class="panel-body">
+    <textarea id="rawText" placeholder="Texto bruto capturado da página SEI aparecerá aqui. Você também pode colar manualmente e clicar em Processar."></textarea>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-header">
+    <span class="panel-label"><i class="fas fa-magic"></i> Texto Processado</span>
+    <div class="btn-group">
+      <button class="btn btn-purple" id="btnCopyText"><i class="fas fa-copy"></i> Copiar</button>
+    </div>
+  </div>
+  <div class="panel-body">
+    <textarea id="processedText" placeholder="Texto limpo e formatado para o campo de elogio aparecerá aqui…"></textarea>
+  </div>
+</div>
+
+<hr class="divider">
+
+<div class="panel">
+  <div class="panel-header">
+    <span class="panel-label"><i class="fas fa-id-card"></i> RGs Capturados</span>
+    <div class="btn-group">
+      <span class="badge zero" id="rgCount">0 RGs</span>
+      <button class="btn btn-orange" id="btnReExtract" title="Reextrair RGs do texto bruto"><i class="fas fa-sync-alt"></i> Reextrair</button>
+      <button class="btn btn-purple" id="btnCopyRGs"><i class="fas fa-copy"></i> Copiar</button>
+    </div>
+  </div>
+  <div class="panel-body">
+    <textarea id="rgList" placeholder="RGs extraídos aparecerão aqui (um por linha). Você também pode editar manualmente antes de enviar."></textarea>
+    <div id="debugInfo"></div>
+  </div>
+</div>
+
+<div id="progressSection">
+  <div class="progress-wrap"><div class="progress-fill" id="progressFill"></div></div>
+  <p class="progress-text" id="progressText">Aguardando…</p>
+</div>
+
+<div class="send-row">
+  <button id="btnSend" disabled>
+    <i class="fas fa-paper-plane"></i> Enviar RGs ao SICAD
+  </button>
+</div>
+
+<script>
+'use strict';
+
+let CFG = null;
+const FALLBACK = {
+  version:'2.1',
+  patterns:{
+    itemPatterns:['ITEM DOEPM','ITEM DOPM','ITEM DO DOPM','ITEM PARA DOPM'],
+    authorityTitles:['Comandante','Chefe','Diretor','Assistente','SUBCOMANDANTE','COMANDANTE','CHEFE','DIRETOR','ASSISTENTE','RESP'],
+    textStartPatterns:['Por terem','Por ter','Que sempre','PELA CONTRIBUIÇÃO','Pelo ter'],
+    textEndPatterns:['Documento Assinado','RNMM'],
+    rgPatterns:['\\b\\d{2}[.,]\\d{3}\\b','\\b\\d{5}\\b'],
+    customInitials:'\nRNMM.'
+  },
+  fieldSelectors:{
+    textField:'#textoElogio',
+    authorityField:'#autoridade',
+    rgField:"input[name='rg']",
+    addButtonSelector:"input[value='Adicionar']"
+  },
+  timings:{rgProcessingDelay:2200,fieldFocusDelay:600,buttonClickDelay:300}
+};
+
+function cfg(){ return CFG || FALLBACK; }
+
+window.addEventListener('message',(e)=>{
+  if(e.data?.type==='INIT_CONFIG'){
+    CFG=e.data.config;
+    document.getElementById('cfgChip').textContent='config v'+(CFG.version||'?');
+    showAlert('Configurações do servidor carregadas.','success');
+  }
+  if(e.data?.type==='DARK_MODE') document.body.classList.toggle('dark-mode',e.data.enabled);
+});
+
+// ── Alert ─────────────────────────────────────────────────────────────────────
+let alertTimer=null;
+function showAlert(msg,type='info',persist=false){
+  const el=document.getElementById('alert');
+  document.getElementById('alertMsg').textContent=msg;
+  document.getElementById('alertIcon').className='fas '+({success:'fa-check-circle',error:'fa-times-circle',info:'fa-info-circle',warning:'fa-exclamation-triangle'}[type]||'fa-info-circle');
+  el.className=type+' show';
+  if(alertTimer) clearTimeout(alertTimer);
+  if(!persist) alertTimer=setTimeout(()=>el.classList.remove('show'),5000);
+}
+
+// ── Debug ─────────────────────────────────────────────────────────────────────
+function debugLog(msg){
+  const el=document.getElementById('debugInfo');
+  el.classList.add('show');
+  el.textContent+=msg+'\n';
+}
+function clearDebug(){
+  const el=document.getElementById('debugInfo');
+  el.textContent='';el.classList.remove('show');
+}
+
+// ── CAPTURA (allFrames:true) ──────────────────────────────────────────────────
+document.getElementById('btnCapture').addEventListener('click',()=>{
+  const btn=document.getElementById('btnCapture');
+  btn.disabled=true;
+  btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Capturando…';
+  clearDebug();
+
+  chrome.tabs.query({active:true,currentWindow:true},([tab])=>{
+    if(!tab){showAlert('Nenhuma aba ativa.','error');reset();return;}
+
+    // Injeta em todos os frames simultaneamente
+    chrome.scripting.executeScript(
+      {target:{tabId:tab.id,allFrames:true},func:()=>{
+        try{
+          const t=(document.body?.innerText||document.body?.textContent||'').trim();
+          return {text:t,url:location.href,len:t.length};
+        }catch(e){return {text:'',url:'erro',len:0};}
+      }},
+      (results)=>{
+        reset();
+        if(chrome.runtime.lastError){
+          showAlert('Erro: '+chrome.runtime.lastError.message,'error',true);
+          debugLog('ERRO: '+chrome.runtime.lastError.message);
+          return;
+        }
+        if(!results||results.length===0){
+          showAlert('Nenhum frame encontrado. Está na página correta?','error',true);
+          return;
+        }
+
+        // Log de todos os frames
+        results.forEach((r,i)=>{
+          const d=r?.result||{text:'',url:'?',len:0};
+          debugLog('Frame '+i+' | '+d.len+' chars | '+d.url.substring(0,60));
+        });
+
+        // Filtra frames com conteúdo relevante e escolhe o maior
+        const validos=results
+          .map(r=>r?.result||{text:'',len:0})
+          .filter(d=>d.len>50)
+          .sort((a,b)=>b.len-a.len);
+
+        if(validos.length===0){
+          showAlert('Nenhum texto relevante encontrado nos frames.','warning',true);
+          return;
+        }
+
+        const melhor=validos[0].text;
+        document.getElementById('rawText').value=melhor;
+        showAlert('Capturado ('+melhor.length+' chars). Processando…','info');
+        processText(melhor);
+      }
+    );
+  });
+
+  function reset(){
+    btn.disabled=false;
+    btn.innerHTML='<i class="fas fa-download"></i> Capturar Texto da Página SEI';
+  }
+});
+
+// ── PROCESSAR ────────────────────────────────────────────────────────────────
+document.getElementById('btnProcess').addEventListener('click',()=>{
+  const raw=document.getElementById('rawText').value.trim();
+  if(!raw){showAlert('Cole ou capture o texto primeiro.','warning');return;}
+  processText(raw);
+});
+
+function processText(raw){
+  const p=cfg().patterns;
+
+  let startIdx=-1;
+  for(const pat of p.textStartPatterns){
+    const idx=raw.indexOf(pat);
+    if(idx!==-1&&(startIdx===-1||idx<startIdx)) startIdx=idx;
+  }
+  let endIdx=raw.length;
+  for(const pat of p.textEndPatterns){
+    const idx=raw.indexOf(pat);
+    if(idx!==-1&&idx<endIdx) endIdx=idx;
+  }
+
+  debugLog('Início: '+startIdx+' | Fim: '+endIdx);
+
+  const excerpt=startIdx!==-1?raw.substring(startIdx,endIdx):raw.substring(0,endIdx);
+  let cleaned=excerpt
+    .replace(/\r\n|\r/g,'\n')
+    .replace(/[ \t]{2,}/g,' ')
+    .replace(/\n{3,}/g,'\n\n')
+    .trim();
+
+  const suffix=(p.customInitials||'').trim();
+  if(suffix&&!cleaned.endsWith(suffix)) cleaned+='\n'+suffix;
+
+  document.getElementById('processedText').value=cleaned;
+
+  const rgs=extractRGs(raw);
+  if(rgs.length>0) showAlert('Processado! '+rgs.length+' RG(s) encontrado(s).','success');
+  else showAlert('Texto processado. Nenhum RG detectado — verifique o texto bruto ou os padrões.','warning',true);
+}
+
+// ── EXTRAIR RGs ───────────────────────────────────────────────────────────────
+function extractRGs(text){
+  clearDebug();
+  const p=cfg().patterns;
+  const found=new Set();
+
+  debugLog('=== Extração de RGs ===');
+
+  for(const patStr of p.rgPatterns){
+    try{
+      const re=new RegExp(patStr,'g');
+      let m;
+      while((m=re.exec(text))!==null){
+        const norm=m[0].replace(/[.,]/g,'').trim();
+        if(norm.length>=4&&norm.length<=7){
+          found.add(norm);
+          debugLog('  match: "'+m[0]+'" → "'+norm+'"');
+        }
+      }
+    }catch(e){debugLog('  ERRO padrão "'+patStr+'": '+e.message);}
+  }
+
+  const arr=Array.from(found).sort((a,b)=>Number(a)-Number(b));
+  document.getElementById('rgList').value=arr.join('\n');
+
+  const badge=document.getElementById('rgCount');
+  badge.textContent=arr.length+' RG'+(arr.length!==1?'s':'');
+  badge.className=arr.length>0?'badge':'badge zero';
+  document.getElementById('btnSend').disabled=arr.length===0;
+
+  debugLog('Total: '+arr.length);
+  return arr;
+}
+
+// ── RE-EXTRAIR ────────────────────────────────────────────────────────────────
+document.getElementById('btnReExtract').addEventListener('click',()=>{
+  const raw=document.getElementById('rawText').value.trim();
+  if(!raw){showAlert('Capture o texto primeiro.','warning');return;}
+  const rgs=extractRGs(raw);
+  showAlert(rgs.length>0?rgs.length+' RG(s) encontrado(s).':'Nenhum RG encontrado.',rgs.length>0?'success':'warning');
+});
+
+// ── COPIAR ────────────────────────────────────────────────────────────────────
+document.getElementById('btnCopyText').addEventListener('click',()=>{
+  const v=document.getElementById('processedText').value.trim();
+  if(!v){showAlert('Nenhum texto para copiar.','warning');return;}
+  navigator.clipboard.writeText(v).then(()=>showAlert('Texto copiado!','success')).catch(()=>showAlert('Falha ao copiar.','error'));
+});
+
+document.getElementById('btnCopyRGs').addEventListener('click',()=>{
+  const v=document.getElementById('rgList').value.trim();
+  if(!v){showAlert('Nenhum RG para copiar.','warning');return;}
+  navigator.clipboard.writeText(v).then(()=>showAlert('RGs copiados!','success')).catch(()=>showAlert('Falha ao copiar.','error'));
+});
+
+// ── LIMPAR ────────────────────────────────────────────────────────────────────
+document.getElementById('btnClearAll').addEventListener('click',()=>{
+  ['rawText','processedText','rgList'].forEach(id=>document.getElementById(id).value='');
+  const b=document.getElementById('rgCount');
+  b.textContent='0 RGs';b.className='badge zero';
+  document.getElementById('btnSend').disabled=true;
+  document.getElementById('alert').classList.remove('show');
+  document.getElementById('progressSection').classList.remove('show');
+  clearDebug();
+});
+
+// ── ENVIAR AO SICAD ───────────────────────────────────────────────────────────
+document.getElementById('btnSend').addEventListener('click',()=>{
+  const raw=document.getElementById('rgList').value.trim();
+  if(!raw){showAlert('Nenhum RG para enviar.','warning');return;}
+  const rgArray=raw.split('\n').map(s=>s.trim()).filter(Boolean);
+  if(!rgArray.length){showAlert('Lista vazia.','warning');return;}
+
+  document.getElementById('btnSend').disabled=true;
+  document.getElementById('progressSection').classList.add('show');
+  setProgress(0,rgArray.length);
+
+  chrome.tabs.query({active:true,currentWindow:true},([tab])=>{
+    if(!tab){showAlert('Nenhuma aba ativa.','error');return;}
+    const c=cfg();
+    chrome.scripting.executeScript(
+      {target:{tabId:tab.id},func:injectedRGSender,args:[rgArray,c.fieldSelectors,c.timings]},
+      ()=>{
+        if(chrome.runtime.lastError){
+          showAlert('Erro: '+chrome.runtime.lastError.message,'error',true);
+          document.getElementById('btnSend').disabled=false;
+        }
+      }
+    );
+  });
+});
+
+chrome.runtime.onMessage.addListener((msg)=>{
+  if(msg.type==='rg:progress') setProgress(msg.current,msg.total);
+  if(msg.type==='rg:done'){
+    setProgress(msg.total,msg.total);
+    showAlert('✓ '+msg.total+' RG(s) enviado(s)!','success');
+    document.getElementById('btnSend').disabled=false;
+  }
+  if(msg.type==='rg:error'){
+    showAlert('Erro: '+msg.message,'error',true);
+    document.getElementById('btnSend').disabled=false;
+  }
+});
+
+function setProgress(current,total){
+  const pct=total>0?Math.round((current/total)*100):0;
+  document.getElementById('progressFill').style.width=pct+'%';
+  document.getElementById('progressText').textContent=
+    current<total?'Enviando '+current+' de '+total+' RGs… ('+pct+'%)':'✓ Concluído: '+total+' RG(s) enviado(s).';
+}
+
+function injectedRGSender(rgList,selectors,timings){
+  const FILL=timings.fieldFocusDelay||600;
+  const CLICK=timings.rgProcessingDelay||2200;
+
+  function find(){
+    let f=document.querySelector(selectors.rgField),b=document.querySelector(selectors.addButtonSelector);
+    if(f&&b) return{field:f,btn:b};
+    for(const fr of document.querySelectorAll('iframe')){
+      try{
+        const d=fr.contentDocument||fr.contentWindow.document;
+        f=d.querySelector(selectors.rgField);b=d.querySelector(selectors.addButtonSelector);
+        if(f&&b) return{field:f,btn:b};
+      }catch(_){}
+    }
+    return null;
+  }
+
+  function wait(retries=20){
+    return new Promise((res,rej)=>{
+      (function attempt(n){
+        const els=find();
+        if(els) return res(els);
+        if(n<=0) return rej(new Error('Formulário não encontrado.'));
+        setTimeout(()=>attempt(n-1),500);
+      })(retries);
+    });
+  }
+
+  function fill({field,btn},val){
+    return new Promise(res=>{
+      field.focus();field.value='';
+      setTimeout(()=>{
+        field.value=val;
+        field.dispatchEvent(new Event('input',{bubbles:true}));
+        field.dispatchEvent(new Event('change',{bubbles:true}));
+        btn.click();
+        setTimeout(res,CLICK);
+      },FILL);
+    });
+  }
+
+  async function run(){
+    let els;
+    try{els=await wait();}
+    catch(e){chrome.runtime.sendMessage({type:'rg:error',message:e.message});return;}
+    for(let i=0;i<rgList.length;i++){
+      await fill(els,rgList[i]);
+      chrome.runtime.sendMessage({type:'rg:progress',current:i+1,total:rgList.length});
+      try{els=await wait(6);}catch(_){}
+    }
+    chrome.runtime.sendMessage({type:'rg:done',total:rgList.length});
+  }
+  run();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+{
+  "manifest_version": 3,
+  "name": "Super DOPM",
+  "version": "2.1",
+  "description": "Extensão modular para extrair e processar dados do DOPM.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://sei.go.gov.br/*",
+    "https://sisp.ssp.go.gov.br/*",
+    "https://stive.com.br/*"
+  ],
+  "icons": {
+    "16": "images/alert.png",
+    "48": "images/alert.png",
+    "128": "images/alert.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/alert.png",
+      "48": "images/alert.png",
+      "128": "images/alert.png"
+    },
+    "default_title": "Super DOPM"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://stive.com.br"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["modules/*"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
